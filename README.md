@@ -153,7 +153,7 @@ Re_label is the fourth of the five functions in run_analysis. It "appropriately 
 
 I found this task tricky, because I thought the column names were pretty good as they were. They were descriptive and relatively easy to read. Because of this, and my lack of further knowledge about the data, I essentially kept them as-is. The only modifications I made were to remove and replace illegal characters from the column names so they can be easily used with the $ operator. I also fixed the "BodyBody" typo that our community TA, David Hood, noticed on the forums.
 
-To remove and replace the illegal characters, I used gsub. Notice in the code snippet that I had to use double backslashes to made sure the illegal characters ("(", ")", and "-")would be recognized within my quotations.
+To remove and replace the illegal characters, I used gsub. Notice in the code snippet that I had to use double backslashes to made sure the illegal characters ("(", ")", and "-") would be recognized within my quotations.
 ```r
 new_labels <- gsub("\\(", "", colnames(described))
 
@@ -193,7 +193,7 @@ activity_labels <- read.table("UCI HAR Dataset/activity_labels.txt")
 action_descriptions <- activity_labels$V2
 ```
 
-Now I'm going to create that "second, independent tidy data set" from scratch by calculating the number of rows I'll need (number of subjects * number of actions) and number of columns I'll need (same as the other data set). I initialize the table as a matrix for control over the size, then set the column names, and then switch it to a data.frame because it was easy for me to do.
+Now I'm going to create that "second, independent tidy data set" from scratch by calculating the number of rows I'll need (number of subjects * number of actions) and number of columns I'll need (same as the other data set). I initialize the table as a matrix for control over the size, set the column names, and then switch it to a data.frame because it was easy for me to do.
 ```r
 columns <- length(labeled)
 
@@ -206,7 +206,7 @@ colnames(tidy_data) <- colnames(labeled)
 tidy_data <- data.frame(tidy_data)
 ```
 
-Now, here's the beast of this function: a triple-nested for loop. I know Roger, our instructor for R Programming, would be mad at me for ignoring his advice of not doing too much nesting, but I thought this was the best way to make the code easy to read, write and debug. I'm sure there's a more efficient way, but I didn't mind waiting a couple of seconds longer for that easiness.
+Now, here's the beast of this function: a triple-nested for loop. I know Roger, our instructor for R Programming, would be mad at me for ignoring his advice of not doing too much nesting. However, I thought this was the best way to make the code easy to read, write and debug. I'm sure there's a more efficient way, but I didn't mind waiting a couple of seconds longer for that easiness.
 ```r
 row <- 1
 
@@ -234,11 +234,11 @@ for (s in 1:length(subjects))
 
 I take advantage of the fact that both subject and action are consecutive vectors. I cycle through them in every combination with the first two loops.
 
-The thing that may be confusing is the columns loop. I start at 4 instead of 1 because I don't want to overwrite the first three columns, which are subject, action, and action\_descrption. Essentially, I figure out what combination of action and subject I'm on, and then I go across every variable and for each, I gather all the measurements in the other dataset for that variable, action, and subject. Then I get the mean of all those measurements and put that value in the cell for that variable-action-subject combination in my tidy\_dataset.
+I start at 4 instead of 1 in the columns loop because I don't want to overwrite the first three columns, which are subject, action, and action\_descrption. Essentially, I figure out what combination of action and subject I'm on, and then I go across every variable. For each variable, I gather all the measurements in the other dataset for that variable, action, and subject. Then I get the mean of all those measurements and put that value in the cell for that variable-action-subject combination in my tidy\_dataset.
 
 After I go through all the variables, I just insert the appropriate values for action and subject. I also use that untouched and ordered version of action_description by pulling the appropriate description by using action as a vector for the value. 
 
-Finally, we are done. The loop finishes, and we have two more lines. The pentultimate is to drop action: we don't need the numerical value if we have the description now. The ultimate is to return our final, tidy, perfect data to the user.
+The loop finishes, and we have two more lines. The pentultimate is to drop action: we don't need the numerical value if we have the description now. The ultimate is to return our final, tidy, perfect data to the user.
 ```r
 tidy_data$action <- NULL
 
